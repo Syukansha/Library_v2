@@ -107,6 +107,7 @@ public class LibraryServiceImpl implements LibraryServices{
         else throw new ResourceNotFoundException("Record not found by id: "+id);
     }
 
+
     @Override
     public BookLoan updateBookLoan(int id, BookLoan bookLoan) {
         Optional<BookLoan> bookData = bookLoanRepositories.findById(id);
@@ -171,6 +172,19 @@ public class LibraryServiceImpl implements LibraryServices{
             usersRepositories.deleteById(id);
         }
     }
+
+    @Override
+    public Student demeritStudent(int id,Student student,int demerit) {
+        Optional<Users> studentData = usersRepositories.findById(id);
+
+        if(studentData.isPresent()){
+            Student _student = (Student) studentData.get();
+            _student.setStudent_merits(_student.getStudent_merits() - demerit);
+            return _student;
+        }
+        else throw new ResourceNotFoundException("Record not found with id: "+id);
+    }
+
     public List<Student> findByUsernameContaining(String username) {
 
         List<Student> userData = new ArrayList<Student>();
@@ -179,6 +193,8 @@ public class LibraryServiceImpl implements LibraryServices{
 
         return userData;
     }
+
+
 //    Librarian
     @Override
     public Librarian addLibrarian(Librarian librarian) {

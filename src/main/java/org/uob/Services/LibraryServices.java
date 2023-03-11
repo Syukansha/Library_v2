@@ -22,6 +22,7 @@ public interface LibraryServices {
     Users searchStudent(int id);
     Users updateStudent(int id, Student student);
     public void deleteStudent(int id);
+    Student demeritStudent(int id,Student student, int demerit);
 
 //    Librarian
     Librarian addLibrarian(Librarian librarian);

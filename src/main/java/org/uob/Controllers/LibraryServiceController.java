@@ -141,6 +141,15 @@ public class LibraryServiceController {
         }
     }
 
+    @PatchMapping("/demerit/student/student_id/{id}/demerit/{merit}")
+    public ResponseEntity<Student> demeritStudent(@PathVariable int id,@PathVariable int merit ,Student student){
+        try {
+            return ResponseEntity.ok().body(libraryServices.demeritStudent(id,student,merit));
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 //    Librarian
     @PostMapping("/add/librarian")
     public ResponseEntity<Users> addLibrarian(@RequestBody Librarian librarian){
