@@ -1,7 +1,6 @@
 package org.uob.Repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.uob.Models.Librarian;
 import org.uob.Models.Student;
 import org.uob.Models.Users;
 

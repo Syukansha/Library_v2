@@ -10,7 +10,6 @@ import org.uob.Repositories.BookLoanRepositories;
 import org.uob.Repositories.BookRepositories;
 import org.uob.Repositories.UsersRepositories;
 import org.uob.Services.LibraryServices;
-
 import java.util.List;
 
 @CrossOrigin
@@ -86,6 +85,15 @@ public class LibraryServiceController {
     public ResponseEntity<Books> updateBook(@PathVariable int id, @RequestBody Books books){
         try {
             return ResponseEntity.ok().body(libraryServices.updateBook(id,books));
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PatchMapping("/update/book_loan/loan_id/{id}")
+    public ResponseEntity<BookLoan> updateBookLoan(@PathVariable int id, @RequestBody BookLoan bookLoan){
+        try {
+            return ResponseEntity.ok().body(libraryServices.updateBookLoan(id,bookLoan));
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

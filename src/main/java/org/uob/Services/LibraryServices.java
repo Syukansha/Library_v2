@@ -1,6 +1,5 @@
 package org.uob.Services;
 
-import org.springframework.data.jpa.repository.Query;
 import org.uob.Models.*;
 
 import java.util.List;
@@ -32,8 +31,4 @@ public interface LibraryServices {
     public void deleteLibrarian(int id);
 
     public void addCategory(CategoriesType categoriesType);
-
-
-
-
 }
