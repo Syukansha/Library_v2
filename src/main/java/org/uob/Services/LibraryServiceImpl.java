@@ -107,7 +107,6 @@ public class LibraryServiceImpl implements LibraryServices{
         else throw new ResourceNotFoundException("Record not found by id: "+id);
     }
 
-
     @Override
     public BookLoan updateBookLoan(int id, BookLoan bookLoan) {
         Optional<BookLoan> bookData = bookLoanRepositories.findById(id);
@@ -142,7 +141,6 @@ public class LibraryServiceImpl implements LibraryServices{
     @Override
     public Users searchStudent(int id) {
         Optional<Users> studentData = this.usersRepositories.findById(id);
-
         if (studentData.isPresent()){
             return studentData.get();
         }
@@ -228,7 +226,6 @@ public class LibraryServiceImpl implements LibraryServices{
     public List<Librarian> findByUsername(String name) {
         List<Librarian> userData = new ArrayList<Librarian>();
         findByUsername(name).forEach(userData::add);
-
         return userData;
     }
 
@@ -243,8 +240,6 @@ public class LibraryServiceImpl implements LibraryServices{
 
     @Override
     public void addCategory(CategoriesType categoriesType) {
-//        categoriesType = new CategoriesType(categoriesType.getGenreID(),categoriesType.getCategories(),categoriesType.getCopies());
-
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.FICTION,50));
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.DRAMA,10));
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.BIOGRAPHY,15));
