@@ -48,10 +48,11 @@ public class LibraryServiceController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/search/book/book_title/{title}")
     public ResponseEntity<List<Books>> searchBookByTitle(@PathVariable String title){
         try {
-            return ResponseEntity.ok().body(bookRepositories.findByTitleContaining(title));
+            return ResponseEntity.ok().body(bookRepositories.searchByTitle(title));
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -66,7 +67,7 @@ public class LibraryServiceController {
         }
     }
 
-    @GetMapping("/search/book/book_id/{bookID}")
+    @GetMapping("/search/book/book_id/{id}")
     public ResponseEntity<Books> searchBookById(@PathVariable int id){
         try {
             return ResponseEntity.ok().body(libraryServices.searchBook(id));
@@ -174,7 +175,6 @@ public class LibraryServiceController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 }

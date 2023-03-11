@@ -6,16 +6,14 @@ import org.uob.Exception.ResourceNotFoundException;
 import org.uob.Models.*;
 import org.uob.Repositories.BookLoanRepositories;
 import org.uob.Repositories.BookRepositories;
+import org.uob.Repositories.CategoriesRepositories;
 import org.uob.Repositories.UsersRepositories;
-
-import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class LibraryServiceImpl implements LibraryServices{
-
     @Autowired
     UsersRepositories usersRepositories;
 
@@ -25,7 +23,8 @@ public class LibraryServiceImpl implements LibraryServices{
     @Autowired
     BookLoanRepositories bookLoanRepositories;
 
-
+    @Autowired
+    CategoriesRepositories categoriesRepositories;
 
 //    Book
     @Override
@@ -44,7 +43,6 @@ public class LibraryServiceImpl implements LibraryServices{
         books.setCategories(Categories.FICTION);
         return bookRepositories.save(books);
     }
-
     @Override
     public Books updateBook(int id, Books books) {
         Optional<Books> bookData = bookRepositories.findById(id);
@@ -60,7 +58,6 @@ public class LibraryServiceImpl implements LibraryServices{
         }
         else throw new ResourceNotFoundException("Record not found with id: "+ id);
     }
-
     @Override
     public void deleteBook(int id) {
         Optional<Books> bookData = this.bookRepositories.findById(id);
@@ -69,7 +66,6 @@ public class LibraryServiceImpl implements LibraryServices{
             bookRepositories.deleteById(id);
         }
     }
-
     @Override
     public void deleteBookLoan(int id) {
         Optional<BookLoan> bookLoanData = this.bookLoanRepositories.findById(id);
@@ -78,24 +74,29 @@ public class LibraryServiceImpl implements LibraryServices{
             bookLoanRepositories.deleteById(id);
         }
     }
-
     @Override
     public BookLoan reserveBook(BookLoan bookLoan, int BookID, int id) {
         Optional<Users> userData = usersRepositories.findById(id);
         Optional<Books> bookData = bookRepositories.findById(BookID);
 
         if(userData.isPresent() && bookData.isPresent()){
-            Users _user = userData.get();
+            Users _user = (Student) userData.get();
             Books books = bookData.get();
 
             bookLoan = new BookLoan(bookLoan.getLoanID(),books,(Student) _user,bookLoan.getDateBorrowed(),bookLoan.getDate_due(),bookLoan.getDate_returned(),bookLoan.getStudent_merits());
 
             bookLoan.setStudent_merits(((Student) _user).getStudent_merits());
-            return bookLoanRepositories.save(bookLoan);
+
+            if(bookLoan.getStudent_merits() >= 10){
+                return bookLoanRepositories.save(bookLoan);
+            }
+            else {
+                throw new ResourceNotFoundException("You can't reserve the book because you are in demerit list");
+            }
+
         }
         else throw new ResourceNotFoundException("record not found with id: "+id+" or "+BookID );
     }
-
     @Override
     public BookLoan searchBookLoan(int id) {
         Optional<BookLoan> bookLoanData = this.bookLoanRepositories.findById(id);
@@ -106,23 +107,34 @@ public class LibraryServiceImpl implements LibraryServices{
         else throw new ResourceNotFoundException("Record not found by id: "+id);
     }
 
+    @Override
+    public BookLoan updateBookLoan(int id, BookLoan bookLoan) {
+        Optional<BookLoan> bookData = bookLoanRepositories.findById(id);
+        if(bookData.isPresent()){
+            BookLoan _bookLoan = bookData.get();
 
-    public List<Books> findByTitleContaining(String title) {
+            _bookLoan.setDate_due(bookLoan.getDate_due());
+            _bookLoan.setDate_returned(bookLoan.getDate_returned());
+            _bookLoan.setDateBorrowed(bookLoan.getDateBorrowed());
+            return bookLoanRepositories.save(_bookLoan);
+        }
+        else throw new ResourceNotFoundException("Record not found with id: "+ id);
+    }
 
+    public List<Books> searchByTitle(String title) {
         List<Books> bookData = new ArrayList<Books>();
 
         if (title == null)
             bookRepositories.findAll().forEach(bookData::add);
         else
-            bookRepositories.findByTitleContaining(title).forEach(bookData::add);
+            searchByTitle(title).forEach(bookData::add);
 
         return bookData;
     }
-
 //    Student
     @Override
     public Users addStudent(Student student) {
-        student = new Student(student.getId(),student.getUsername(),student.getPassword(),student.getEmail(),student.getStudent_merits());
+        student = new Student(student.getId(),student.getUsername(),student.getPassword(),student.getEmail(),25);
         return usersRepositories.save(student);
     }
 
@@ -135,7 +147,6 @@ public class LibraryServiceImpl implements LibraryServices{
         }
         else throw new ResourceNotFoundException("Record not found by id: "+id);
     }
-
     @Override
     public Users updateStudent(int id, Student student) {
         Optional<Users> userData = usersRepositories.findById(id);
@@ -152,7 +163,6 @@ public class LibraryServiceImpl implements LibraryServices{
         }
         else throw new ResourceNotFoundException("Record not found with id: "+id);
     }
-
     @Override
     public void deleteStudent(int id) {
         Optional<Users> studentData = this.usersRepositories.findById(id);
@@ -161,7 +171,6 @@ public class LibraryServiceImpl implements LibraryServices{
             usersRepositories.deleteById(id);
         }
     }
-
     public List<Student> findByUsernameContaining(String username) {
 
         List<Student> userData = new ArrayList<Student>();
@@ -170,16 +179,12 @@ public class LibraryServiceImpl implements LibraryServices{
 
         return userData;
     }
-
-
-
 //    Librarian
     @Override
     public Librarian addLibrarian(Librarian librarian) {
         librarian = new Librarian(librarian.getId(),librarian.getUsername(),librarian.getPassword(),librarian.getEmail());
         return usersRepositories.save(librarian);
     }
-
     @Override
     public Librarian searchLibrarian(int id) {
         Optional<Users> librarianData = this.usersRepositories.findById(id);
@@ -189,7 +194,6 @@ public class LibraryServiceImpl implements LibraryServices{
         }
         else throw new ResourceNotFoundException("Record not found by id: "+id);
     }
-
     @Override
     public Librarian updateLibrarian(int id, Librarian librarian) {
         Optional<Users> userData = usersRepositories.findById(id);
@@ -212,9 +216,6 @@ public class LibraryServiceImpl implements LibraryServices{
         return userData;
     }
 
-
-
-
     @Override
     public void deleteLibrarian(int id) {
         Optional<Users> userData = this.usersRepositories.findById(id);
@@ -223,6 +224,18 @@ public class LibraryServiceImpl implements LibraryServices{
             usersRepositories.deleteById(id);
         }
     }
+
+    @Override
+    public void addCategory(CategoriesType categoriesType) {
+//        categoriesType = new CategoriesType(categoriesType.getGenreID(),categoriesType.getCategories(),categoriesType.getCopies());
+
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.FICTION,50));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.DRAMA,10));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.BIOGRAPHY,15));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.MYSTERY,20));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.LITERATURE,12));
+    }
+
 
 
 }
