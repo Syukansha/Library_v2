@@ -247,6 +247,10 @@ public class LibraryServiceImpl implements LibraryServices{
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.LITERATURE,12));
     }
 
+    @Override
+    public Iterable<CategoriesType> getAllCategories() {
+        return categoriesRepositories.findAll();
+    }
 
 
 }

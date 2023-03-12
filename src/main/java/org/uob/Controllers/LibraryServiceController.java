@@ -99,6 +99,15 @@ public class LibraryServiceController {
         }
     }
 
+    @GetMapping("/get_all/categories")
+    public Iterable<CategoriesType> getAllCategories(){
+        try {
+            return libraryServices.getAllCategories();
+        }catch (Exception e){
+            return null;
+        }
+    }
+
 //    Student
     @PostMapping("/add/student")
     public ResponseEntity<Users> addStudent(@RequestBody Student student){

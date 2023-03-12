@@ -32,4 +32,5 @@ public interface LibraryServices {
     public void deleteLibrarian(int id);
 
     public void addCategory(CategoriesType categoriesType);
+    Iterable<CategoriesType> getAllCategories();
 }
