@@ -120,13 +120,13 @@ public class LibraryServiceImpl implements LibraryServices{
 
             bookLoan.setStudent_merits(((Student) _user).getStudent_merits());
 
-            if(bookLoan.getStudent_merits() >= 10){
+            if(bookLoan.getStudent_merits() >= 10 && books.getStatus().equalsIgnoreCase("available")){
                 books.setStatus("Not Available");
                 bookRepositories.save(books);
                 return bookLoanRepositories.save(bookLoan);
             }
             else {
-                throw new ResourceNotFoundException("You can't reserve the book because you are in demerit list");
+                throw new ResourceNotFoundException("You can't reserve the book because you are in demerit list or the book is not available");
             }
 
         }
