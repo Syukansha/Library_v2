@@ -2,6 +2,7 @@ package org.uob.Services;
 
 import org.uob.Models.*;
 
+import java.awt.print.Book;
 import java.util.List;
 
 public interface LibraryServices {
@@ -13,6 +14,7 @@ public interface LibraryServices {
     public void deleteBook(int id);
     public void deleteBookLoan(int id);
     BookLoan reserveBook(BookLoan bookLoan, int BookID, int id);
+    BookLoan returnedBook(BookLoan bookLoan, int loanId, int id);
     BookLoan searchBookLoan(int id);
     BookLoan updateBookLoan(int id, BookLoan bookLoan);
 

@@ -40,7 +40,7 @@ public class LibraryServiceImpl implements LibraryServices{
     @Override
     public Books addBook(Books books) {
         books = new Books(books.getBookID(),books.getTitle(),books.getAuthor(),books.getCategories(),books.getStatus());
-        books.setCategories(Categories.FICTION);
+
         return bookRepositories.save(books);
     }
     @Override
@@ -97,6 +97,28 @@ public class LibraryServiceImpl implements LibraryServices{
         }
         else throw new ResourceNotFoundException("record not found with id: "+id+" or "+BookID );
     }
+
+    @Override
+    public BookLoan returnedBook(BookLoan bookLoan,int loanId, int id) {
+        Optional<BookLoan> getData = bookLoanRepositories.findById(id);
+        Optional<Users> getStudent =  usersRepositories.findById(id);
+        if(getData.isPresent() && getStudent.isPresent()){
+
+            BookLoan loan = getData.get();
+            Student _student = (Student) getStudent.get();
+            loan.setDate_returned(bookLoan.getDate_returned());
+            if(loan.getDate_returned().compareTo(loan.getDate_due()) > 0){
+                System.out.println("YOU are late");
+                _student.setStudent_merits(_student.getStudent_merits() - 5);
+                usersRepositories.save(_student);
+            }
+            return bookLoanRepositories.save(loan);
+        }else{
+            return null;
+        }
+
+    }
+
     @Override
     public BookLoan searchBookLoan(int id) {
         Optional<BookLoan> bookLoanData = this.bookLoanRepositories.findById(id);
@@ -240,10 +262,10 @@ public class LibraryServiceImpl implements LibraryServices{
 
     @Override
     public void addCategory(CategoriesType categoriesType) {
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.FICTION,50));
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.DRAMA,10));
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.BIOGRAPHY,15));
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.MYSTERY,20));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.DRAMA,10));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.FICTION,50));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.BIOGRAPHY,15));
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.LITERATURE,12));
     }
 

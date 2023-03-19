@@ -31,9 +31,18 @@ public class LibraryServiceController {
 
 //    Book
     @PostMapping("/add/loan/book_ID/{bookID}/student_ID/{id}")
-    public ResponseEntity<BookLoan> createLoan(@RequestBody BookLoan bookLoan, @PathVariable int bookID, @PathVariable int id){
+    public ResponseEntity<BookLoan> loanBook(@RequestBody BookLoan bookLoan, @PathVariable int bookID, @PathVariable int id){
         try {
             return ResponseEntity.ok().body(libraryServices.reserveBook(bookLoan,bookID,id));
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/return/loan/loanId/{loanId}/studentId/{id}")
+    public ResponseEntity<BookLoan> returnedBook(@RequestBody BookLoan bookLoan, @PathVariable int loanId, @PathVariable int id){
+        try {
+            return ResponseEntity.ok().body(libraryServices.returnedBook(bookLoan,loanId,id));
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
