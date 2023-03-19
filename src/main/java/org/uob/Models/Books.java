@@ -18,14 +18,25 @@ public class Books {
 
     private String status;
 
+    private String synopsis;
+
     public Books(){}
 
-    public Books(int bookID, String title, String author, Categories categories, String status) {
+    public Books(int bookID, String title, String author, Categories categories, String status,String synopsis) {
         BookID = bookID;
         this.title = title;
         this.author = author;
         this.categories = categories;
         this.status = status;
+        this.synopsis = synopsis;
+    }
+
+    public Books(String title, String author, Categories categories, String status,String synopsis) {
+        this.title = title;
+        this.author = author;
+        this.categories = categories;
+        this.status = status;
+        this.synopsis = synopsis;
     }
 
     public int getBookID() {
@@ -46,6 +57,14 @@ public class Books {
 
     public String getAuthor() {
         return author;
+    }
+
+    public String getSynopsis() {
+        return synopsis;
+    }
+
+    public void setSynopsis(String synopsis) {
+        this.synopsis = synopsis;
     }
 
     public void setAuthor(String author) {

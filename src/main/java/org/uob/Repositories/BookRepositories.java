@@ -7,6 +7,9 @@ import org.uob.Models.Books;
 import java.util.List;
 
 public interface BookRepositories extends JpaRepository<Books, Integer> {
-    @Query("select b from Books b where  title like %?1%")
-    public List<Books> searchByTitle(String title);
+//    @Query("select b from Books b where title like %?1%")
+    public List<Books> findByTitleContainingIgnoreCase(String title);
+
+    @Query("select b from Books b where  Categories like %?1%")
+    public List<Books> searchByGenre(int genre);
 }

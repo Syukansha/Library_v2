@@ -10,13 +10,18 @@ public interface LibraryServices {
 //    Books
     Books searchBook(int id);
     Books addBook(Books books);
+    public void addDummyBooks(Books books);
     Books updateBook(int id, Books books);
+    Iterable<Books> getAllBooks();
     public void deleteBook(int id);
     public void deleteBookLoan(int id);
     BookLoan reserveBook(BookLoan bookLoan, int BookID, int id);
-    BookLoan returnedBook(BookLoan bookLoan, int loanId, int id);
+    BookLoan returnedBook(BookLoan bookLoan, int loanId, int id,int bookId);
     BookLoan searchBookLoan(int id);
     BookLoan updateBookLoan(int id, BookLoan bookLoan);
+
+
+
 
 
 //    Users

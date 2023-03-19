@@ -39,10 +39,10 @@ public class LibraryServiceController {
         }
     }
 
-    @PostMapping("/return/loan/loanId/{loanId}/studentId/{id}")
-    public ResponseEntity<BookLoan> returnedBook(@RequestBody BookLoan bookLoan, @PathVariable int loanId, @PathVariable int id){
+    @PostMapping("/return/loan/loanId/{loanId}/studentId/{id}/bookId/{bookId}")
+    public ResponseEntity<BookLoan> returnedBook(@RequestBody BookLoan bookLoan, @PathVariable int loanId, @PathVariable int id,@PathVariable int bookId){
         try {
-            return ResponseEntity.ok().body(libraryServices.returnedBook(bookLoan,loanId,id));
+            return ResponseEntity.ok().body(libraryServices.returnedBook(bookLoan,loanId,id,bookId));
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -57,10 +57,29 @@ public class LibraryServiceController {
         }
     }
 
+
+    @GetMapping("/books")
+    public ResponseEntity<Iterable<Books>> getAllBooks(){
+        try {
+            return ResponseEntity.ok().body(libraryServices.getAllBooks());
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/search/book/book_title/{title}")
     public ResponseEntity<List<Books>> searchBookByTitle(@PathVariable String title){
         try {
-            return ResponseEntity.ok().body(bookRepositories.searchByTitle(title));
+            return ResponseEntity.ok().body(bookRepositories.findByTitleContainingIgnoreCase(title));
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/search/book/book_genre/{genre}")
+    public ResponseEntity<List<Books>> searchBookByGenre(@PathVariable int genre){
+        try {
+            return ResponseEntity.ok().body(bookRepositories.searchByGenre(genre));
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

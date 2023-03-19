@@ -39,10 +39,36 @@ public class LibraryServiceImpl implements LibraryServices{
 
     @Override
     public Books addBook(Books books) {
-        books = new Books(books.getBookID(),books.getTitle(),books.getAuthor(),books.getCategories(),books.getStatus());
+        books = new Books(books.getBookID(),books.getTitle(),books.getAuthor(),books.getCategories(),books.getStatus(), books.getSynopsis());
 
         return bookRepositories.save(books);
     }
+
+    @Override
+    public void addDummyBooks(Books books) {
+        String s = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Mollis nunc sed id semper risus in. Vel orci porta non pulvinar neque laoreet suspendisse. Ridiculus mus .";
+
+        bookRepositories.save(new Books("Titanic","Jack", Categories.DRAMA, "AVAILABLE",s));
+        bookRepositories.save(new Books("In Search of Lost Time  ","Marcel Proust", Categories.DRAMA, "AVAILABLE",s));
+        bookRepositories.save(new Books("\n" +
+                "Harry Potter and the Philosopher’s Stone","J.K Rowling", Categories.FICTION, "AVAILABLE",s));
+        bookRepositories.save(new Books("\n" +
+                "Harry Potter and the Prisoner of Azkaban","J.K Rowling", Categories.FICTION, "AVAILABLE",s));
+        bookRepositories.save(new Books("Bleach","Noriyuki Abe", Categories.LITERATURE, "AVAILABLE",s));
+        bookRepositories.save(new Books("Bleach","Noriyuki Abe", Categories.LITERATURE, "AVAILABLE",s));
+        bookRepositories.save(new Books("Bleach","Noriyuki Abe", Categories.LITERATURE, "AVAILABLE",s));
+        bookRepositories.save(new Books("One Piece","Kōnosuke Uda", Categories.MYSTERY, "AVAILABLE",s));
+        bookRepositories.save(new Books("One Piece","Kōnosuke Uda", Categories.MYSTERY, "AVAILABLE",s));
+        bookRepositories.save(new Books("One Piece","Kōnosuke Uda", Categories.MYSTERY, "AVAILABLE",s));
+        bookRepositories.save(new Books("Steve Jobs","Walter Isaacson ", Categories.BIOGRAPHY, "AVAILABLE",s));
+        bookRepositories.save(new Books("Steve Jobs","Walter Isaacson ", Categories.BIOGRAPHY, "AVAILABLE",s));
+        bookRepositories.save(new Books("Steve Jobs","Walter Isaacson ", Categories.BIOGRAPHY, "AVAILABLE",s));
+        bookRepositories.save(new Books("Steve Jobs","Walter Isaacson ", Categories.BIOGRAPHY, "AVAILABLE",s));
+        bookRepositories.save(new Books("Spare","Prince Harry", Categories.BIOGRAPHY, "AVAILABLE",s));
+        bookRepositories.save(new Books("Spare","Prince Harry", Categories.BIOGRAPHY, "AVAILABLE",s));
+        bookRepositories.save(new Books("Spare","Prince Harry", Categories.BIOGRAPHY, "AVAILABLE",s));
+    }
+
     @Override
     public Books updateBook(int id, Books books) {
         Optional<Books> bookData = bookRepositories.findById(id);
@@ -53,11 +79,18 @@ public class LibraryServiceImpl implements LibraryServices{
             _book.setCategories(books.getCategories());
             _book.setAuthor(books.getAuthor());
             _book.setStatus(books.getStatus());
+            _book.setSynopsis(books.getSynopsis());
 
             return bookRepositories.save(_book);
         }
         else throw new ResourceNotFoundException("Record not found with id: "+ id);
     }
+
+    @Override
+    public Iterable<Books> getAllBooks() {
+        return bookRepositories.findAll();
+    }
+
     @Override
     public void deleteBook(int id) {
         Optional<Books> bookData = this.bookRepositories.findById(id);
@@ -88,6 +121,8 @@ public class LibraryServiceImpl implements LibraryServices{
             bookLoan.setStudent_merits(((Student) _user).getStudent_merits());
 
             if(bookLoan.getStudent_merits() >= 10){
+                books.setStatus("Not Available");
+                bookRepositories.save(books);
                 return bookLoanRepositories.save(bookLoan);
             }
             else {
@@ -99,11 +134,13 @@ public class LibraryServiceImpl implements LibraryServices{
     }
 
     @Override
-    public BookLoan returnedBook(BookLoan bookLoan,int loanId, int id) {
+    public BookLoan returnedBook(BookLoan bookLoan,int loanId, int id, int bookId) {
         Optional<BookLoan> getData = bookLoanRepositories.findById(id);
         Optional<Users> getStudent =  usersRepositories.findById(id);
-        if(getData.isPresent() && getStudent.isPresent()){
+        Optional<Books> getBook =  bookRepositories.findById(bookId);
 
+        if(getData.isPresent() && getStudent.isPresent() && getBook.isPresent()){
+            Books books = getBook.get();
             BookLoan loan = getData.get();
             Student _student = (Student) getStudent.get();
             loan.setDate_returned(bookLoan.getDate_returned());
@@ -112,6 +149,8 @@ public class LibraryServiceImpl implements LibraryServices{
                 _student.setStudent_merits(_student.getStudent_merits() - 5);
                 usersRepositories.save(_student);
             }
+
+            books.setStatus("Available");
             return bookLoanRepositories.save(loan);
         }else{
             return null;
@@ -153,6 +192,18 @@ public class LibraryServiceImpl implements LibraryServices{
 
         return bookData;
     }
+
+    public List<Books> searchByGenre(int genre) {
+        List<Books> bookData = new ArrayList<Books>();
+
+        if (genre == 0)
+            bookRepositories.findAll().forEach(bookData::add);
+        else
+            searchByGenre(genre).forEach(bookData::add);
+
+        return bookData;
+    }
+
 //    Student
     @Override
     public Users addStudent(Student student) {
@@ -268,6 +319,8 @@ public class LibraryServiceImpl implements LibraryServices{
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.BIOGRAPHY,15));
         categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.LITERATURE,12));
     }
+
+
 
 
 
