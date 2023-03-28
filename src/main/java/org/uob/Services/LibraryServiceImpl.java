@@ -41,6 +41,48 @@ public class LibraryServiceImpl implements LibraryServices{
     public Books addBook(Books books) {
         books = new Books(books.getBookID(),books.getTitle(),books.getAuthor(),books.getCategories(),books.getStatus(), books.getSynopsis());
 
+        if(books.getCategories() == Categories.MYSTERY){
+            Optional<CategoriesType> getData = categoriesRepositories.findById(1);
+            if(getData.isPresent()){
+                CategoriesType _genre = getData.get();
+                _genre.setCopies(_genre.getCopies() + 1);
+                categoriesRepositories.save(_genre);
+            }
+        }
+        if(books.getCategories() == Categories.DRAMA){
+            Optional<CategoriesType> getData = categoriesRepositories.findById(2);
+            if(getData.isPresent()){
+                CategoriesType _genre = getData.get();
+                _genre.setCopies(_genre.getCopies() + 1);
+                categoriesRepositories.save(_genre);
+            }
+        }
+        if(books.getCategories() == Categories.FICTION){
+            Optional<CategoriesType> getData = categoriesRepositories.findById(3);
+            if(getData.isPresent()){
+                CategoriesType _genre = getData.get();
+                _genre.setCopies(_genre.getCopies() + 1);
+                categoriesRepositories.save(_genre);
+            }
+        }
+        if(books.getCategories() == Categories.BIOGRAPHY){
+            Optional<CategoriesType> getData = categoriesRepositories.findById(4);
+            if(getData.isPresent()){
+                CategoriesType _genre = getData.get();
+                _genre.setCopies(_genre.getCopies() + 1);
+                categoriesRepositories.save(_genre);
+            }
+        }
+        if(books.getCategories() == Categories.LITERATURE){
+            Optional<CategoriesType> getData = categoriesRepositories.findById(5);
+            if(getData.isPresent()){
+                CategoriesType _genre = getData.get();
+                _genre.setCopies(_genre.getCopies() + 1);
+                categoriesRepositories.save(_genre);
+            }
+        }
+
+
         return bookRepositories.save(books);
     }
 
@@ -123,6 +165,47 @@ public class LibraryServiceImpl implements LibraryServices{
             if(bookLoan.getStudent_merits() >= 10 && books.getStatus().equalsIgnoreCase("available")){
                 books.setStatus("Not Available");
                 bookRepositories.save(books);
+
+                if(books.getCategories() == Categories.MYSTERY){
+                    Optional<CategoriesType> getData = categoriesRepositories.findById(1);
+                    if(getData.isPresent()){
+                        CategoriesType _genre = getData.get();
+                        _genre.setCopies(_genre.getCopies() - 1);
+                        categoriesRepositories.save(_genre);
+                    }
+                }
+                if(books.getCategories() == Categories.DRAMA){
+                    Optional<CategoriesType> getData = categoriesRepositories.findById(2);
+                    if(getData.isPresent()){
+                        CategoriesType _genre = getData.get();
+                        _genre.setCopies(_genre.getCopies() - 1);
+                        categoriesRepositories.save(_genre);
+                    }
+                }
+                if(books.getCategories() == Categories.FICTION){
+                    Optional<CategoriesType> getData = categoriesRepositories.findById(3);
+                    if(getData.isPresent()){
+                        CategoriesType _genre = getData.get();
+                        _genre.setCopies(_genre.getCopies() - 1);
+                        categoriesRepositories.save(_genre);
+                    }
+                }
+                if(books.getCategories() == Categories.BIOGRAPHY){
+                    Optional<CategoriesType> getData = categoriesRepositories.findById(4);
+                    if(getData.isPresent()){
+                        CategoriesType _genre = getData.get();
+                        _genre.setCopies(_genre.getCopies() - 1);
+                        categoriesRepositories.save(_genre);
+                    }
+                }
+                if(books.getCategories() == Categories.LITERATURE){
+                    Optional<CategoriesType> getData = categoriesRepositories.findById(5);
+                    if(getData.isPresent()){
+                        CategoriesType _genre = getData.get();
+                        _genre.setCopies(_genre.getCopies() - 1);
+                        categoriesRepositories.save(_genre);
+                    }
+                }
                 return bookLoanRepositories.save(bookLoan);
             }
             else {
@@ -148,6 +231,47 @@ public class LibraryServiceImpl implements LibraryServices{
                 System.out.println("YOU are late");
                 _student.setStudent_merits(_student.getStudent_merits() - 5);
                 usersRepositories.save(_student);
+            }
+
+            if(books.getCategories() == Categories.MYSTERY){
+                Optional<CategoriesType> _book = categoriesRepositories.findById(1);
+                if(_book.isPresent()){
+                    CategoriesType _genre = _book.get();
+                    _genre.setCopies(_genre.getCopies() + 1);
+                    categoriesRepositories.save(_genre);
+                }
+            }
+            if(books.getCategories() == Categories.DRAMA){
+                Optional<CategoriesType> _book = categoriesRepositories.findById(2);
+                if(_book.isPresent()){
+                    CategoriesType _genre = _book.get();
+                    _genre.setCopies(_genre.getCopies() + 1);
+                    categoriesRepositories.save(_genre);
+                }
+            }
+            if(books.getCategories() == Categories.FICTION){
+                Optional<CategoriesType> _book = categoriesRepositories.findById(3);
+                if(_book.isPresent()){
+                    CategoriesType _genre = _book.get();
+                    _genre.setCopies(_genre.getCopies() + 1);
+                    categoriesRepositories.save(_genre);
+                }
+            }
+            if(books.getCategories() == Categories.BIOGRAPHY){
+                Optional<CategoriesType> _book = categoriesRepositories.findById(4);
+                if(_book.isPresent()){
+                    CategoriesType _genre = _book.get();
+                    _genre.setCopies(_genre.getCopies() + 1);
+                    categoriesRepositories.save(_genre);
+                }
+            }
+            if(books.getCategories() == Categories.LITERATURE){
+                Optional<CategoriesType> _book = categoriesRepositories.findById(5);
+                if(_book.isPresent()){
+                    CategoriesType _genre = _book.get();
+                    _genre.setCopies(_genre.getCopies() + 1);
+                    categoriesRepositories.save(_genre);
+                }
             }
 
             books.setStatus("Available");
@@ -180,6 +304,11 @@ public class LibraryServiceImpl implements LibraryServices{
             return bookLoanRepositories.save(_bookLoan);
         }
         else throw new ResourceNotFoundException("Record not found with id: "+ id);
+    }
+
+    @Override
+    public Iterable<BookLoan> getAllLoan() {
+        return bookLoanRepositories.findAll();
     }
 
     public List<Books> searchByTitle(String title) {
@@ -265,6 +394,17 @@ public class LibraryServiceImpl implements LibraryServices{
         return userData;
     }
 
+    public List<BookLoan> getLoanStudent(int id){
+        List<BookLoan> loanData = new ArrayList<BookLoan>();
+
+        if(id == 0){
+            bookLoanRepositories.findAll().forEach(loanData::add);
+        }
+        else
+            getLoanStudent(id).forEach(loanData::add);
+        return loanData;
+    }
+
 
 //    Librarian
     @Override
@@ -313,11 +453,11 @@ public class LibraryServiceImpl implements LibraryServices{
 
     @Override
     public void addCategory(CategoriesType categoriesType) {
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.MYSTERY,20));
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.DRAMA,10));
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.FICTION,50));
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.BIOGRAPHY,15));
-        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.LITERATURE,12));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.MYSTERY,0));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.DRAMA,0));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.FICTION,0));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.BIOGRAPHY,0));
+        categoriesRepositories.save(new CategoriesType(categoriesType.getGenreID(),Categories.LITERATURE,0));
     }
 
 

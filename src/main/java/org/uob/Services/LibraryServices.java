@@ -19,7 +19,7 @@ public interface LibraryServices {
     BookLoan returnedBook(BookLoan bookLoan, int loanId, int id,int bookId);
     BookLoan searchBookLoan(int id);
     BookLoan updateBookLoan(int id, BookLoan bookLoan);
-
+    Iterable<BookLoan> getAllLoan();
 
 
 

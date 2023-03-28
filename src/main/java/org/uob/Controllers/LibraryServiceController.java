@@ -67,6 +67,15 @@ public class LibraryServiceController {
         }
     }
 
+    @GetMapping("/loans")
+    public ResponseEntity<Iterable<BookLoan>> getAllLoan(){
+        try {
+            return ResponseEntity.ok().body(libraryServices.getAllLoan());
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/search/book/book_title/{title}")
     public ResponseEntity<List<Books>> searchBookByTitle(@PathVariable String title){
         try {
@@ -173,6 +182,15 @@ public class LibraryServiceController {
     public ResponseEntity<Student> demeritStudent(@PathVariable int id,@PathVariable int merit ,Student student){
         try {
             return ResponseEntity.ok().body(libraryServices.demeritStudent(id,student,merit));
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/search/loan/student-id/{id}")
+    public ResponseEntity<List<BookLoan>> searchLoanStudent(@PathVariable int id){
+        try {
+            return ResponseEntity.ok().body(bookLoanRepositories.getLoanStudent(id));
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
